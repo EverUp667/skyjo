@@ -128,8 +128,27 @@ void jeu::jouertourC(const std::string& input, bool isFinalTurn) {
 void jeu::jouertour(bool isFinalTurn) {
     std::string input;
     while (_dernierjoueur == -1) {
-        std::cin >> input;
-        jouertourC(input, isFinalTurn);
+        // Priorité au buffer IA
+        if (_aiBuffer >> input) {
+            jouertourC(translateCommand(input), isFinalTurn);
+        }
+        // Sinon lecture console + traduction
+        else {
+            std::cout << "> ";
+            if (std::cin >> input) {
+                jouertourC(translateCommand(input), isFinalTurn);
+            }
+            else {
+                std::cin.clear();
+                std::cin.ignore();
+            }
+        }
+
+        // Vérification fin de tour
+        if (_currentState == GameState::TurnEnd) {
+            _currentState = GameState::ChooseAction;
+            break;
+        }
     }
 }
 
