@@ -5,8 +5,15 @@ jeu::jeu(int nombre_de_joueurs)
 {
 
     setupJeu();
-    updateConsolePrompt(false);
     std::cout << "=== Début de la partie ===" << std::endl;
+    std::cout << "Tour N°" << _tour_actuel << std::endl;
+    if (!_pile_defausse.empty()) {
+        std::cout << "Defausse : " << _pile_defausse.back().get_value() << std::endl;
+    }
+    for (int i = 0; i < _nb_joueurs; ++i) {
+        _planche[i]->afficherMain();
+    }
+    updateConsolePrompt(false);
     jouertour(false);
 
 }
@@ -107,6 +114,7 @@ void jeu::jouertourC(const std::string& input, bool isFinalTurn) {
             for (int i = 0; i < _nb_joueurs; ++i) {
                 _planche[i]->afficherMain();
             }
+            updateConsolePrompt(isFinalTurn);
             if (_tour_actuel%_nb_joueurs != _dernierjoueur && _dernierjoueur != -1) {
                 jouertour(isFinalTurn);
             }
@@ -119,8 +127,10 @@ void jeu::jouertourC(const std::string& input, bool isFinalTurn) {
 
 void jeu::jouertour(bool isFinalTurn) {
     std::string input;
-    std::cin >> input;
-    jouertourC(input, isFinalTurn);
+    while (_dernierjoueur == -1) {
+        std::cin >> input;
+        jouertourC(input, isFinalTurn);
+    }
 }
 
 carte jeu::tirerCarteDeLaPioche() {
@@ -153,7 +163,7 @@ void jeu::updateConsolePrompt(const bool isFinalTurn) {
             prompt = "Choisissez une action (piocher, prendre_defausse): ";
             break;
         case GameState::ChooseCardOrFlip:
-            prompt = "Choisissez une carte à retourner ou à remplacer: ";
+            prompt = "Choisissez une action (remplacer, defausser): ";
             break;
         case GameState::ChoosePosition:
             prompt = "Choisissez la position de la carte: ";

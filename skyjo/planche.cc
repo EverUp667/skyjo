@@ -1,4 +1,6 @@
 #include "planche.hh"
+#include <iostream>
+#include <stdexcept>
 
 planche::planche()
     : _nom_joueur(""), _score(0) {
@@ -28,7 +30,7 @@ void planche::set_score() {
 }
 
 carte planche::remplacerCarte(int index, const carte& carte_a_ajouter) {
-    if (index < 0 || index >= _main.size()) {
+    if (index < 0 || static_cast<size_t>(index) >= _main.size()) {
         throw std::out_of_range("Index invalide pour remplacer la carte");
     }
     carte carte_remplacee = _main[index];
