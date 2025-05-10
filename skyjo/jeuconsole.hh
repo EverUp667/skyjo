@@ -12,6 +12,7 @@
 #include <iterator>
 #include <iostream>
 #include <algorithm>
+#include <unordered_map>
 
 
 class jeu {
@@ -48,6 +49,15 @@ class jeu {
         carte tirerCarteDeLaPioche();
         carte prendreCarteDefausse();
         void defausserCarte(const carte& c);
+
+    std::string jeu::translateCommand(const std::string& input) const {
+        static const std::unordered_map<std::string, std::string> cmdMap = {
+            {"P","piocher"}, {"D","prendre_defausse"}, 
+            {"R","remplacer"}, {"F","defausser"},
+            {"p","piocher"}, {"d","defausser"}};
+        auto it = cmdMap.find(input);
+        return (it != cmdMap.end()) ? it->second : input;
+    }
 
 
     public:
